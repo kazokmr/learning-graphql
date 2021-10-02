@@ -1,4 +1,4 @@
-let {_id, photos} = require(`./variables`)
+let {_id, photos} = require('./variables')
 
 module.exports = {
   postPhoto(parent, args) {

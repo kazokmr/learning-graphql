@@ -1,6 +1,6 @@
-let {users, tags, photos} = require(`./variables`)
+let {users, tags, photos} = require('./variables')
 
-const {GraphQLScalarType} = require(`graphql`)
+const {GraphQLScalarType} = require('graphql')
 
 module.exports = {
   Photo: {
@@ -25,8 +25,8 @@ module.exports = {
   },
 
   DateTime: new GraphQLScalarType({
-    name: `DateTime`,
-    description: `A valid date time value.`,
+    name: 'DateTime',
+    description: 'A valid date time value.',
     parseValue: value => new Date(value),
     serialize: value => new Date(value).toISOString(),
     parseLiteral: ast => ast.value
