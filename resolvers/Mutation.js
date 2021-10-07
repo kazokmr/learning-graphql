@@ -1,4 +1,5 @@
 const {authorizeWithGithub} = require('../lib')
+const fetch = require("node-fetch")
 
 module.exports = {
   async postPhoto(parent, args, {db, currentUser}) {
@@ -49,5 +50,37 @@ module.exports = {
 
     const user = latestUserInfo
     return {user, token: access_token}
+  },
+
+  addFakeUsers: async (root, {count}, {db}) => {
+
+    let randomUserApi = `https://randomuser.me/api/?results=${count}`
+
+    let {results} = await fetch(randomUserApi).then(res => res.json())
+
+    let users = results.map(r => ({
+      githubLogin: r.login.username,
+      name: `${r.name.first} ${r.name.last}`,
+      avatar: r.picture.thumbnail,
+      githubToken: r.login.sha1
+    }))
+
+    await db.collection("users").insertMany(users)
+
+    return users
+  },
+
+  async fakeUserAuth(parent, {githubLogin}, {db}) {
+
+    let user = await db.collection("users").findOne({githubLogin})
+
+    if (!user) {
+      throw new Error(`Cannot find user with githubLogin ${githubLogin}`)
+    }
+
+    return {
+      token: user.githubToken,
+      user
+    }
   }
 }
