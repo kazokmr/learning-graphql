@@ -1,13 +1,14 @@
 let {users, tags, photos} = require('./variables')
-
 const {GraphQLScalarType} = require('graphql')
 
 module.exports = {
+
   Photo: {
-    url: parent => `http://example.com/img/${parent.id}.jpg`,
-    postedBy: parent => {
-      return users.find(u => u.githubLogin === parent.githubUser)
-    },
+    id: parent => parent.id || parent._id,
+    url: parent => `/img/photos/${parent._id}.jpg`,
+    postedBy: (parent, args, {db}) =>
+      db.collection("users")
+        .findOne({githubLogin: parent.userID}),
     taggedUsers: parent => tags
       .filter(tag => tag.photoID === parent.id)
       .map(tag => tag.userID)
@@ -15,9 +16,11 @@ module.exports = {
   },
 
   User: {
-    postedPhotos: parent => {
-      return photos.filter(p => p.githubUser === parent.githubLogin)
-    },
+    postedPhotos: (parent, args, {db}) =>
+      db.collection("photos")
+        .find({userID: parent.githubLogin})
+        .toArray(),
+
     inPhotos: parent => tags
       .filter(tag => tag.userID === parent.id)
       .map(tag => tag.photoID)
