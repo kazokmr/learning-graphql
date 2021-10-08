@@ -1,18 +1,28 @@
-let {users, tags, photos} = require('./variables')
 const {GraphQLScalarType} = require('graphql')
+const {ObjectId} = require("mongodb");
 
 module.exports = {
 
   Photo: {
     id: parent => parent.id || parent._id,
+
     url: parent => `/img/photos/${parent._id}.jpg`,
+
     postedBy: (parent, args, {db}) =>
       db.collection("users")
         .findOne({githubLogin: parent.userID}),
-    taggedUsers: parent => tags
-      .filter(tag => tag.photoID === parent.id)
-      .map(tag => tag.userID)
-      .map(userID => users.find(u => u.githubLogin === userID))
+
+    taggedUsers: async (parent, args, {db}) => {
+      const tags = await db.collection('tags')
+        .find({photoID: parent._id.toString()})
+        .toArray()
+
+      const logins = tags.map(t => t.githubLogin)
+
+      return db.collection('users')
+        .find({githubLogin: {$in: logins}})
+        .toArray();
+    }
   },
 
   User: {
@@ -21,10 +31,17 @@ module.exports = {
         .find({userID: parent.githubLogin})
         .toArray(),
 
-    inPhotos: parent => tags
-      .filter(tag => tag.userID === parent.id)
-      .map(tag => tag.photoID)
-      .map(photoID => photos.find(p => p.id === photoID))
+    inPhotos: async (parent, args, {db}) => {
+      const tags = await db.collection('tags')
+        .find({githubLogin: parent.githubLogin})
+        .toArray()
+
+      const photoIDs = tags.map(t => ObjectId(t.photoID))
+
+      return db.collection('photos')
+        .find({_id: {$in: photoIDs}})
+        .toArray();
+    }
   },
 
   DateTime: new GraphQLScalarType({
