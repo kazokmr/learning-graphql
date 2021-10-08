@@ -1,7 +1,9 @@
 const {authorizeWithGithub} = require('../lib')
 const fetch = require("node-fetch")
+const {ObjectId} = require("mongodb");
 
 module.exports = {
+
   async postPhoto(parent, args, {db, currentUser}) {
     if (!currentUser) {
       throw new Error("only an authorized user can post a photo")
@@ -17,6 +19,15 @@ module.exports = {
     newPhoto.id = insertedIds
 
     return newPhoto
+  },
+
+  async tagPhoto(parent, args, {db}) {
+
+    await db.collection('tags')
+      .replaceOne(args, args, {upsert: true})
+
+    return db.collection('photos')
+      .findOne({_id: ObjectId(args.photoID)})
   },
 
   async githubAuth(parent, {code}, {db}) {
