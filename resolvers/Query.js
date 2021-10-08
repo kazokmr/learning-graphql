@@ -1,3 +1,5 @@
+const {ObjectId} = require("mongodb");
+
 module.exports = {
 
   me: (parent, args, {currentUser}) => currentUser,
@@ -11,6 +13,10 @@ module.exports = {
       .find()
       .toArray(),
 
+  Photo: (parent, args, {db}) =>
+    db.collection('photos')
+      .findOne({_id: ObjectId(args.id)}),
+
   totalUsers: (parent, args, {db}) =>
     db.collection('users')
       .estimatedDocumentCount(),
@@ -18,6 +24,9 @@ module.exports = {
   allUsers: (parent, args, {db}) =>
     db.collection('users')
       .find()
-      .toArray()
+      .toArray(),
 
+  User: (parent, args, {db}) =>
+    db.collection('users')
+      .findOne({githubLogin: args.login})
 }
