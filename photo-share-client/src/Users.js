@@ -4,7 +4,7 @@ import {gql} from "apollo-boost";
 import {ROOT_QUERY} from "./App";
 
 const Users = () =>
-  <Query query={ROOT_QUERY}>
+  <Query query={ROOT_QUERY} fetchPolicy="cache-and-network">
     {({data, loading, refetch}) => loading ?
       <p>loading users...</p> :
       <UserList count={data.totalUsers}
