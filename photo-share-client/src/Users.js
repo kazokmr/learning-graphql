@@ -33,24 +33,15 @@ const UserList = ({count, users, refetchUsers}) =>
     </ul>
   </div>
 
-const UserListItem = (
-  {
-    name, avatar
-  }
-) =>
+const UserListItem = ({name, avatar}) =>
   <li>
     <img src={avatar} width={48} height={48} alt=""/>
     {name}
   </li>
 
 const ADD_FAKE_USERS_MUTATION = gql`
-    mutation addFakeUsers($count:Int!)
-    {
-        addFakeUsers(count
-        :
-        $count
-        )
-        {
+    mutation addFakeUsers($count:Int!) {
+        addFakeUsers(count:$count) {
             githubLogin
             name
             avatar
