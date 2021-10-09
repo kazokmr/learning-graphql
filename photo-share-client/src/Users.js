@@ -16,10 +16,12 @@ const Users = () =>
 const UserList = ({count, users, refetchUsers}) =>
   <div>
     <p>{count} Users</p>
-    <button onClick={() => refetchUsers()}>Refetch Users</button>
-    <Mutation mutation={ADD_FAKE_USERS_MUTATION} variables={{count: 1}}>
+    <button onClick={() => refetchUsers()}>ユーザー情報の更新</button>
+    <Mutation mutation={ADD_FAKE_USERS_MUTATION}
+              variables={{count: 1}}
+              refetchQueries={[{query: ROOT_QUERY}]}>
       {addFakeUsers =>
-        <button onClick={addFakeUsers}>Add Fake Users</button>
+        <button onClick={addFakeUsers}>テストユーザーを追加する</button>
       }
     </Mutation>
     <ul>
@@ -31,15 +33,24 @@ const UserList = ({count, users, refetchUsers}) =>
     </ul>
   </div>
 
-const UserListItem = ({name, avatar}) =>
+const UserListItem = (
+  {
+    name, avatar
+  }
+) =>
   <li>
     <img src={avatar} width={48} height={48} alt=""/>
     {name}
   </li>
 
 const ADD_FAKE_USERS_MUTATION = gql`
-    mutation addFakeUsers($count:Int!){
-        addFakeUsers(count: $count){
+    mutation addFakeUsers($count:Int!)
+    {
+        addFakeUsers(count
+        :
+        $count
+        )
+        {
             githubLogin
             name
             avatar
