@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {withRouter} from "react-router-dom"
+import {NavLink, withRouter} from "react-router-dom"
 import {gql} from "apollo-boost";
 import {Mutation, Query, withApollo} from "react-apollo";
 import {ROOT_QUERY} from "./App";
@@ -30,6 +30,7 @@ const CurrentUser = ({name, avatar, logout}) =>
     <img src={avatar} width={48} height={48} alt=""/>
     <h1>{name}</h1>
     <button onClick={logout}>logout</button>
+    <NavLink to="/newPhoto">写真を投稿する</NavLink>
   </div>
 
 class AuthorizedUser extends Component {
