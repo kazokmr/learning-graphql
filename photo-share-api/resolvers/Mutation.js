@@ -32,7 +32,7 @@ module.exports = {
       .findOne({_id: ObjectId(args.photoID)})
   },
 
-  async githubAuth(parent, {code}, {db}) {
+  async githubAuth(parent, {code}, {db, pubsub}) {
 
     let {
       message,
@@ -62,10 +62,12 @@ module.exports = {
       .replaceOne({githubLogin: login}, latestUserInfo, {upsert: true})
 
     const user = latestUserInfo
+    pubsub.publish('user-added', {newUser: [user]})
+
     return {user, token: access_token}
   },
 
-  addFakeUsers: async (root, {count}, {db}) => {
+  addFakeUsers: async (root, {count}, {db, pubsub}) => {
 
     let randomUserApi = `https://randomuser.me/api/?results=${count}`
 
@@ -79,6 +81,7 @@ module.exports = {
     }))
 
     await db.collection("users").insertMany(users)
+    pubsub.publish('user-added', {newUser: users})
 
     return users
   },
