@@ -35,12 +35,12 @@ const authorizeWithGithub = async credentials => {
 
 const uploadStream = (stream, path) =>
   new Promise((resolve, reject) => {
-    stream.on('error', error => {
+    stream?.on('error', error => {
       if (stream.truncated) {
         fs.unlinkSync(path)
       }
       reject(error)
-    }).on('end', resolve)
+    })?.on('end', resolve)
       .pipe(fs.createWriteStream(path))
   })
 
