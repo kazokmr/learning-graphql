@@ -33,8 +33,7 @@ export default class PostPhoto extends Component {
                onChange={({target}) =>
                  this.setState({name: target.value})}/>
 
-        <textarea type="text"
-                  style={{margin: '10px'}}
+        <textarea style={{margin: '10px'}}
                   placeholder="写真の詳細..."
                   value={this.state.description}
                   onChange={({target}) =>
