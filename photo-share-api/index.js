@@ -8,6 +8,7 @@ require('dotenv').config()
 
 const typeDefs = readFileSync('./typeDefs.graphql', 'UTF-8')
 const resolvers = require('./resolvers')
+const path = require("path");
 
 async function start() {
 
@@ -32,7 +33,13 @@ async function start() {
   server.applyMiddleware({app})
 
   app.get('/', (req, res) => res.end(`Welcome to the PhotoShare API`))
+
   app.get('/playground', expressPlayground({endpoint: '/graphql'}))
+
+  app.use(
+    'img/photos',
+    express.static(path.join(__dirname, 'assets', 'photos'))
+  )
 
   const httpServer = createServer(app)
   server.installSubscriptionHandlers(httpServer)
