@@ -2,7 +2,7 @@ import React from "react";
 import {render} from "react-dom";
 import App from "./App";
 import {ApolloProvider} from "react-apollo";
-import {persistCache} from "apollo-cache-persist";
+import {persistCache} from "apollo3-cache-persist";
 import {
   ApolloClient,
   ApolloLink,
