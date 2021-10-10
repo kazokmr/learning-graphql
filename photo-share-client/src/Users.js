@@ -28,8 +28,7 @@ const UserList = ({count, users, refetchUsers}) =>
     <p>{count} Users</p>
     <button onClick={() => refetchUsers()}>ユーザー情報の更新</button>
     <Mutation mutation={ADD_FAKE_USERS_MUTATION}
-              variables={{count: 1}}
-              update={updateUserCache}>
+              variables={{count: 1}}>
       {addFakeUsers =>
         <button onClick={addFakeUsers}>テストユーザーを追加する</button>
       }
@@ -48,17 +47,5 @@ const UserListItem = ({name, avatar}) =>
     <img src={avatar} width={48} height={48} alt=""/>
     {name}
   </li>
-
-const updateUserCache = (cache, {data: {addFakeUsers}}) => {
-  let data = cache.readQuery({query: ROOT_QUERY})
-  if (data) {
-    data.totalUsers += addFakeUsers.length
-    data.allUsers = [
-      ...data.allUsers,
-      ...addFakeUsers
-    ]
-  }
-  cache.writeQuery({query: ROOT_QUERY, data})
-}
 
 export default Users
