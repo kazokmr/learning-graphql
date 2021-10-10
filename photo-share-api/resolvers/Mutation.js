@@ -62,7 +62,7 @@ module.exports = {
       .replaceOne({githubLogin: login}, latestUserInfo, {upsert: true})
 
     const user = latestUserInfo
-    pubsub.publish('user-added', {newUser: [user]})
+    pubsub.publish('user-added', {newUser: user})
 
     return {user, token: access_token}
   },
@@ -81,7 +81,14 @@ module.exports = {
     }))
 
     await db.collection("users").insertMany(users)
-    pubsub.publish('user-added', {newUser: users})
+
+    let newUsers = await db.collection('users')
+      .find()
+      .sort({_id: -1})
+      .limit(count)
+      .toArray()
+
+    newUsers.forEach(newUser => pubsub.publish('user-added', {newUser}))
 
     return users
   },
