@@ -1,0 +1,21 @@
+{
+  "name": "mock-photo-share-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^3.4.0",
+    "graphql": "^15.6.1",
+    "casual": "^1.6.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.13"
+  }
+}
