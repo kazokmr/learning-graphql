@@ -22,9 +22,7 @@ async function start() {
     typeDefs,
     resolvers,
     context: async ({req, connection}) => {
-      const githubToken = req ?
-        req.headers.authorization :
-        connection.context.Authorization
+      const githubToken = req ? req.headers.authorization : connection.context.Authorization
       const currentUser = await db.collection('users').findOne({githubToken})
       return {db, currentUser, pubsub}
     }
@@ -43,6 +41,8 @@ async function start() {
 
   const httpServer = createServer(app)
   server.installSubscriptionHandlers(httpServer)
+
+  httpServer.timeout = 5000
 
   httpServer.listen({port: 4000}, () =>
     console.log(`GraphQL Server running @ http://localhost:4000${server.graphqlPath}`)
