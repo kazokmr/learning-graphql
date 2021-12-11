@@ -18,8 +18,8 @@
     "graphql-depth-limit": "^1.1.0",
     "graphql-playground-middleware-express": "^1.7.22",
     "graphql-validation-complexity": "^0.4.2",
-    "mongodb": "^4.2.0",
-    "node-fetch": "^2.0.0",
+    "mongodb": "^4.２.０",
+    "node-fetch": "^3.1.0",
     "nodemon": "^2.0.15"
   }
 }
