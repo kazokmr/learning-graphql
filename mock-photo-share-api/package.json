@@ -11,9 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^3.6.1",
-    "graphql": "^16.2.0",
-    "casual": "^1.6.2"
+    "apollo-server": "^3.6.2",
+    "casual": "^1.6.2",
+    "graphql": "^16.2.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
