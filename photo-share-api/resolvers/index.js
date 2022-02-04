@@ -1,7 +1,7 @@
-const Query = require('./Query')
-const Mutation = require('./Mutation')
-const Subscription = require("./Subscription")
-const Type = require('./Type')
+import Query from "./Query.js";
+import Mutation from "./Mutation.js"
+import Subscription from "./Subscription.js"
+import Type from "./Type.js"
 
 const resolvers = {
   Query,
@@ -10,4 +10,4 @@ const resolvers = {
   ...Type
 }
 
-module.exports = resolvers
+export default resolvers;

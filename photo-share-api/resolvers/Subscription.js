@@ -1,4 +1,4 @@
-module.exports = {
+const Subscription = {
   newPhoto: {
     subscribe: (parent, args, {pubsub}) =>
       pubsub.asyncIterator('photo-added')
@@ -6,5 +6,7 @@ module.exports = {
   newUser: {
     subscribe: (parent, args, {pubsub}) =>
       pubsub.asyncIterator('user-added')
-  }
-}
+  },
+};
+
+export default Subscription;

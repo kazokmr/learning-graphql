@@ -1,7 +1,8 @@
-const {GraphQLScalarType} = require('graphql')
-const {ObjectId} = require("mongodb");
+import {GraphQLScalarType} from "graphql";
+import {GraphQLUpload} from "graphql-upload/public/index.js";
+import {ObjectId} from "mongodb";
 
-module.exports = {
+const Type = {
 
   Photo: {
     id: parent => parent.id || parent._id,
@@ -15,14 +16,15 @@ module.exports = {
     taggedUsers: async (parent, args, {db}) => {
       const tags = await db.collection('tags')
         .find({photoID: parent._id.toString()})
-        .toArray()
+        .toArray();
 
-      const logins = tags.map(t => t.githubLogin)
+      const logins = tags.map(t => t.githubLogin);
 
       return db.collection('users')
         .find({githubLogin: {$in: logins}})
         .toArray();
-    }
+    },
+
   },
 
   User: {
@@ -34,14 +36,15 @@ module.exports = {
     inPhotos: async (parent, args, {db}) => {
       const tags = await db.collection('tags')
         .find({githubLogin: parent.githubLogin})
-        .toArray()
+        .toArray();
 
-      const photoIDs = tags.map(t => ObjectId(t.photoID))
+      const photoIDs = tags.map(t => ObjectId(t.photoID));
 
       return db.collection('photos')
         .find({_id: {$in: photoIDs}})
         .toArray();
-    }
+    },
+
   },
 
   DateTime: new GraphQLScalarType({
@@ -50,5 +53,10 @@ module.exports = {
     parseValue: value => new Date(value),
     serialize: value => new Date(value).toISOString(),
     parseLiteral: ast => ast.value
-  })
-}
+  }),
+
+  Upload: GraphQLUpload,
+
+};
+
+export default Type;

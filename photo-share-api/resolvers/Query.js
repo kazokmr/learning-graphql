@@ -1,6 +1,6 @@
-const {ObjectId} = require("mongodb");
+import {ObjectId} from "mongodb";
 
-module.exports = {
+const Query = {
 
   me: (parent, args, {currentUser}) => currentUser,
 
@@ -8,6 +8,7 @@ module.exports = {
     db.collection('photos')
       .estimatedDocumentCount(),
 
+  // TODO: パラメータafterに対応するfilterが無い
   allPhotos: (parent, args, {db}) =>
     db.collection('photos')
       .find()
@@ -28,5 +29,7 @@ module.exports = {
 
   User: (parent, args, {db}) =>
     db.collection('users')
-      .findOne({githubLogin: args.login})
-}
+      .findOne({githubLogin: args.login}),
+};
+
+export default Query;
