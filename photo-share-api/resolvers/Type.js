@@ -1,5 +1,5 @@
 import {GraphQLScalarType} from "graphql";
-import {GraphQLUpload} from "graphql-upload/public/index.js";
+import {GraphQLUpload} from "graphql-upload";
 import {ObjectId} from "mongodb";
 
 const Type = {

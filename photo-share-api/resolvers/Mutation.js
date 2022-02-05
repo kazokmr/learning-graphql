@@ -23,7 +23,8 @@ const Mutation = {
       __dirname, '..', 'assets', 'photos', '${newPhoto.id}.jpg'
     );
 
-    const {stream} = await args.input.file;
+    const {createReadStream,filename,mimetype,encoding} = await args.input.file;
+    const stream = createReadStream();
     await uploadStream(stream, toPath);
 
     await pubsub.publish('photo-added', {newPhoto})

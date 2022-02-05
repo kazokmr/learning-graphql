@@ -1,10 +1,12 @@
+import {pubsub} from "../index.js";
+
 const Subscription = {
   newPhoto: {
-    subscribe: (parent, args, {pubsub}) =>
+    subscribe: () =>
       pubsub.asyncIterator('photo-added')
   },
   newUser: {
-    subscribe: (parent, args, {pubsub}) =>
+    subscribe: () =>
       pubsub.asyncIterator('user-added')
   },
 };

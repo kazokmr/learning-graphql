@@ -20,57 +20,58 @@ import {graphqlUploadExpress} from "graphql-upload/public/index.js";
 dotenv.config();
 const typeDefs = readFileSync(`./typeDefs.graphql`, `UTF-8`);
 
+const schema = makeExecutableSchema({typeDefs, resolvers});
+
+const MONGO_DB = process.env.DB_HOST;
+const client = await MongoClient.connect(MONGO_DB, {useNewUrlParser: true});
+const db = client.db();
+
+// Subscription ResolverにはContext経由で渡らないのでGlobalにする
+export const pubsub = new PubSub();
+
+const app = express();
+const httpServer = createServer(app);
+
+const subscriptionServer = SubscriptionServer.create(
+  {schema, execute, subscribe},
+  {server: httpServer, path: "/graphql"}
+);
+
+const server = new ApolloServer({
+  schema,
+  context: async ({req, connection}) => {
+    const githubToken = req ? req.headers.authorization : connection.context.Authorization;
+    const currentUser = await db.collection('users').findOne({githubToken});
+    return {db, currentUser, pubsub};
+  },
+  plugins: [{
+    async serverWillStart() {
+      return {
+        async drainServer() {
+          subscriptionServer.close();
+        }
+      };
+    },
+  },
+    ApolloServerPluginLandingPageGraphQLPlayground()
+  ],
+  apollo: true,
+  validationRules: [
+    depthLimit(5),
+    createComplexityLimitRule(1000, {
+      onCost: cost => console.log('query cost: ', cost)
+    })
+  ],
+});
+
 (async function () {
-
-  const app = express();
   app.use(graphqlUploadExpress());
-  const httpServer = createServer(app);
-
-  const schema = makeExecutableSchema({typeDefs, resolvers});
-
-  const subscriptionServer = SubscriptionServer.create(
-    {schema, execute, subscribe},
-    {server: httpServer, path: "/graphql"}
-  );
-
-  const MONGO_DB = process.env.DB_HOST;
-  const client = await MongoClient.connect(MONGO_DB, {useNewUrlParser: true});
-  const db = client.db();
-  const pubsub = new PubSub();
-
-  const server = new ApolloServer({
-    schema,
-    plugins: [{
-      async serverWillStart() {
-        return {
-          async drainServer() {
-            subscriptionServer.close();
-          }
-        };
-      },
-    },
-      ApolloServerPluginLandingPageGraphQLPlayground()
-    ],
-    engine: true,
-    validationRules: [
-      depthLimit(5),
-      createComplexityLimitRule(1000, {
-        onCost: cost => console.log('query cost: ', cost)
-      })
-    ],
-    context: async ({req, connection}) => {
-      const githubToken = req ? req.headers.authorization : connection.context.Authorization;
-      const currentUser = await db.collection('users').findOne({githubToken});
-      return {db, currentUser, pubsub};
-    },
-  });
-  await server.start();
-  server.applyMiddleware({app});
-
   app.get('/', (req, res) => res.end(`Welcome to the PhotoShare API`));
-
   const __dirname = new URL(import.meta.url).pathname;
   app.use('img/photos', express.static(path.join(__dirname, 'assets', 'photos')));
+
+  await server.start();
+  server.applyMiddleware({app});
 
   httpServer.timeout = 5000;
   httpServer.listen({port: 4000}, () =>
