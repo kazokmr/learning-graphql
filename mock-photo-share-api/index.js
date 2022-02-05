@@ -1,6 +1,6 @@
-const {ApolloServer} = require("apollo-server")
-const {readFileSync} = require("fs")
-const {casual} = require('casual')
+import {ApolloServer} from "apollo-server";
+import {readFileSync} from "fs";
+import casual from "casual";
 
 const typeDefs = readFileSync('./typeDefs.graphql', 'UTF-8')
 const resolvers = {}
