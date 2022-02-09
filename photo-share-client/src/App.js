@@ -1,11 +1,10 @@
-import React, {Component, Fragment} from "react";
-import {BrowserRouter, Route, Switch} from "react-router-dom";
-import {gql} from "apollo-boost";
-import {withApollo} from "react-apollo";
-import Users from "./Users";
-import AuthorizedUser from "./AuthorizedUser"
-import Photos from "./Photos";
-import PostPhoto from "./PostPhoto";
+import React, {Fragment} from "react";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {gql, useSubscription} from "@apollo/client"
+import {AuthorizedUser} from "./AuthorizedUser"
+import {Users} from "./Users";
+import {Photos} from "./Photos";
+import {PostPhoto} from "./PostPhoto";
 
 export const ROOT_QUERY = gql`
     query allUsers {
@@ -25,7 +24,7 @@ export const ROOT_QUERY = gql`
         name
         avatar
     }
-`
+`;
 
 const LISTEN_FOR_USERS = gql`
     subscription {
@@ -35,48 +34,41 @@ const LISTEN_FOR_USERS = gql`
             avatar
         }
     }
-`
+`;
 
-class App extends Component {
+export const App = () => {
 
-  componentDidMount() {
-    let {client} = this.props
-    this.listenForUsers = client
-      .subscribe({query: LISTEN_FOR_USERS})
-      .subscribe(({data: {newUser}}) => {
-        const data = client.cache.readQuery({query: ROOT_QUERY})
-        data.totalUsers += 1
-        data.allUsers = [
-          ...data.allUsers,
-          newUser
-        ]
-        client.cache.writeQuery({query: ROOT_QUERY, data})
-      })
-  }
+  useSubscription(LISTEN_FOR_USERS, {
+    onSubscriptionData: ({client, subscriptionData}) => {
+      const newUser = subscriptionData.data.newUser;
+      const users = client.readQuery({query: ROOT_QUERY});
+      // users ObjectのPropertyがReadOnlyになる
+      // またApolloClientの既知のIssueがある。 https://github.com/apollographql/apollo-client/issues/8677
+      client.writeQuery({query: ROOT_QUERY}, {
+        ...users,
+        totalUsers: users.totalUsers + 1,
+        allUsers: [...users.allUsers, newUser],
+      });
+    }
+  });
 
-  componentWillUnmount() {
-    this.listenForUsers.unsubscribe()
-  }
-
-  render() {
-    return (
-      <BrowserRouter>
-        <Switch>
-          <Route exact path="/" component={() =>
-            <Fragment>
-              <AuthorizedUser/>
-              <Users/>
-              <Photos/>
-            </Fragment>
-          }/>
-          <Route path="/newPhoto" component={PostPhoto}/>
-          <Route component={({location}) =>
-            <h1>"{location.pathname}" not found</h1>
-          }/>
-        </Switch>
-      </BrowserRouter>
-    )
-  }
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={
+          <Fragment>
+            <AuthorizedUser/>
+            <Users/>
+            <Photos/>
+          </Fragment>
+        }
+        />
+        <Route path="/newPhoto" element={<PostPhoto/>}/>
+        <Route path="*" element={({location}) =>
+          <h1>"{location.pathname}" not found</h1>
+        }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
 }
-
-export default withApollo(App)

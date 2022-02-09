@@ -1,6 +1,6 @@
-import React, {Component} from "react";
-import {gql} from "apollo-boost";
-import {Mutation} from "react-apollo";
+import React, {useState} from "react";
+import {gql, useMutation} from "@apollo/client";
+import {useNavigate} from "react-router-dom";
 
 const POST_PHOTO_MUTATION = gql`
     mutation postPhoto($input: PostPhotoInput) {
@@ -10,85 +10,81 @@ const POST_PHOTO_MUTATION = gql`
             url
         }
     }
-`
+`;
 
-export default class PostPhoto extends Component {
+export const PostPhoto = () => {
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("PORTRAIT");
+  const [file, setFile] = useState("");
 
-  state = {
-    name: '',
-    description: '',
-    category: 'PORTRAIT',
-    file: ''
-  }
+  const navigate = useNavigate();
 
-  postPhoto = async (mutation) => {
-    await mutation({
+  const [postPhotoMutation, {
+    loading,
+    error
+  }] = useMutation(POST_PHOTO_MUTATION);
+
+  const postPhoto = async () => {
+    await postPhotoMutation({
       variables: {
-        input: this.state
+        input: {
+          name,
+          description,
+          category,
+          file
+        }
       }
-    }).catch(console.error)
-    this.props.history.replace('/')
+    });
+    navigate("/", {replace: true});
   }
 
-  render() {
-    return (
-      <form onSubmit={e => e.preventDefault()}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-start',
-              alignItems: 'flex-start'
-            }}>
+  if (loading) return "写真登録中...";
+  if (error) return `Post Error! ${error.message}`;
 
-        <h1>写真を投稿する</h1>
+  return (
+    <form onSubmit={e => e.preventDefault()}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            alignItems: 'flex-start'
+          }}>
 
-        <input type="text"
-               style={{margin: '10px'}}
-               placeholder="写真の名称..."
-               value={this.state.name}
-               onChange={({target}) =>
-                 this.setState({name: target.value})}/>
+      <h1>写真を投稿する</h1>
 
-        <textarea style={{margin: '10px'}}
-                  placeholder="写真の詳細..."
-                  value={this.state.description}
-                  onChange={({target}) =>
-                    this.setState({description: target.value})}/>
+      <input type="text"
+             style={{margin: '10px'}}
+             placeholder="写真の名称..."
+             value={name}
+             onChange={({target}) => setName(target.value)}
+      />
 
-        <select value={this.state.category}
-                style={{margin: '10px'}}
-                onChange={({target}) =>
-                  this.setState({category: target.value})}>
-          <option value="PORTRAIT">PORTRAIT</option>
-          <option value="LANDSCAPE">LANDSCAPE</option>
-          <option value="ACTION">ACTION</option>
-          <option value="GRAPHIC">GRAPHIC</option>
-        </select>
+      <textarea style={{margin: '10px'}}
+                placeholder="写真の詳細..."
+                value={description}
+                onChange={({target}) => setDescription(target.value)}
+      />
 
-        <input type="file"
-               style={{margin: '10px'}}
-               accept="image/jpeg"
-               onChange={({target}) =>
-                 this.setState({
-                   file: target.files && target.files.length ?
-                     target.files[0] :
-                     ''
-                 })}/>
+      <select value={category}
+              style={{margin: '10px'}}
+              onChange={({target}) => setCategory(target.value)}>
+        <option value="PORTRAIT">PORTRAIT</option>
+        <option value="LANDSCAPE">LANDSCAPE</option>
+        <option value="ACTION">ACTION</option>
+        <option value="GRAPHIC">GRAPHIC</option>
+      </select>
 
-        <div style={{margin: '10px'}}>
-          <Mutation mutation={POST_PHOTO_MUTATION}>
-            {mutation =>
-              <button onClick={() => this.postPhoto(mutation)}>
-                写真を投稿する
-              </button>
-            }
-          </Mutation>
-          <button onClick={() => this.props.history.goBack()}>
-            キャンセル
-          </button>
-        </div>
+      <input type="file"
+             style={{margin: '10px'}}
+             accept="image/jpeg"
+             onChange={({target}) => setFile(target.files && target.files.length ? target.files[0] : "")}
+      />
 
-      </form>
-    )
-  }
+      <div style={{margin: '10px'}}>
+        <button onClick={() => postPhoto()}>写真を投稿する</button>
+        <button onClick={() => navigate(-1)}>キャンセル</button>
+      </div>
+    </form>
+  );
 };
