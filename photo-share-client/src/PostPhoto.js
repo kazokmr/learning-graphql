@@ -3,7 +3,7 @@ import {gql, useMutation} from "@apollo/client";
 import {useNavigate} from "react-router-dom";
 
 const POST_PHOTO_MUTATION = gql`
-    mutation postPhoto($input: PostPhotoInput) {
+    mutation postPhoto($input: PostPhotoInput!) {
         postPhoto(input: $input) {
             id
             name
@@ -23,15 +23,17 @@ export const PostPhoto = () => {
   const [postPhotoMutation, {
     loading,
     error
-  }] = useMutation(POST_PHOTO_MUTATION);
+  }] = useMutation(POST_PHOTO_MUTATION, {
+    variables: {input: ""}
+  });
 
   const postPhoto = async () => {
     await postPhotoMutation({
       variables: {
         input: {
           name,
-          description,
           category,
+          description,
           file
         }
       }
@@ -82,8 +84,8 @@ export const PostPhoto = () => {
       />
 
       <div style={{margin: '10px'}}>
-        <button onClick={() => postPhoto()}>写真を投稿する</button>
-        <button onClick={() => navigate(-1)}>キャンセル</button>
+        <button type="button" onClick={() => postPhoto()}>写真を投稿する</button>
+        <button type="button" onClick={() => navigate(-1)}>キャンセル</button>
       </div>
     </form>
   );

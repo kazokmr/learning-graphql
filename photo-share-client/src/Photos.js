@@ -3,7 +3,6 @@ import {useQuery} from "@apollo/client";
 import {ROOT_QUERY} from "./App";
 
 export const Photos = () => {
-
   const {loading, error, data} = useQuery(ROOT_QUERY, {
     fetchPolicy: "cache-first",
   });

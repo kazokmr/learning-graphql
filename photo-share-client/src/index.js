@@ -5,15 +5,15 @@ import {
   ApolloClient,
   ApolloLink,
   ApolloProvider,
-  HttpLink,
   InMemoryCache,
   split
 } from "@apollo/client"
 import {WebSocketLink} from "@apollo/client/link/ws";
 import {getMainDefinition} from "@apollo/client/utilities";
 import {LocalStorageWrapper, persistCache} from "apollo3-cache-persist";
+import {createUploadLink} from "apollo-upload-client/public/index";
 
-const httpLink = new HttpLink({uri: 'http://localhost:4000/graphql'});
+const httpLink = new createUploadLink({uri: 'http://localhost:4000/graphql'});
 
 const authLink = new ApolloLink((operation, forward) => {
   operation.setContext(context => ({
