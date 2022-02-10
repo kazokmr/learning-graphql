@@ -68,7 +68,7 @@ const server = new ApolloServer({
   app.use(graphqlUploadExpress());
   app.get('/', (req, res) => res.end(`Welcome to the PhotoShare API`));
   const __dirname = new URL(import.meta.url).pathname;
-  app.use('img/photos', express.static(path.join(__dirname, 'assets', 'photos')));
+  app.use('/img/photos', express.static(path.join(__dirname, '..', 'assets', 'photos')));
 
   await server.start();
   server.applyMiddleware({app});

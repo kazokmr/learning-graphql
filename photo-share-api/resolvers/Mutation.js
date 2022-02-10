@@ -5,7 +5,7 @@ import path from "path";
 
 const Mutation = {
 
-  async postPhoto(root, args, {db, currentUser, pubsub}) {
+  postPhoto: async (root, args, {db, currentUser, pubsub}) => {
     if (!currentUser) {
       throw new Error("only an authorized user can post a photo");
     }
@@ -19,11 +19,17 @@ const Mutation = {
     const {insertedId} = await db.collection("photos").insertOne(newPhoto);
     newPhoto.id = insertedId;
 
+    const __dirname = new URL(import.meta.url).pathname;
     let toPath = path.join(
-      __dirname, '..', 'assets', 'photos', '${newPhoto.id}.jpg'
+      __dirname, '..', '..', 'assets', 'photos', `${newPhoto.id}.jpg`
     );
 
-    const {createReadStream,filename,mimetype,encoding} = await args.input.file;
+    const {
+      createReadStream,
+      filename,
+      mimetype,
+      encoding
+    } = await args.input.file;
     const stream = createReadStream();
     await uploadStream(stream, toPath);
 
@@ -32,7 +38,7 @@ const Mutation = {
     return newPhoto;
   },
 
-  async tagPhoto(parent, args, {db}) {
+  tagPhoto: async (parent, args, {db}) => {
 
     await db.collection('tags')
       .replaceOne(args, args, {upsert: true});
@@ -41,7 +47,7 @@ const Mutation = {
       .findOne({_id: ObjectId(args.photoID)});
   },
 
-  async githubAuth(parent, {code}, {db, pubsub}) {
+  githubAuth: async (parent, {code}, {db, pubsub}) => {
 
     let {
       message,
@@ -102,7 +108,7 @@ const Mutation = {
     return users;
   },
 
-  async fakeUserAuth(parent, {githubLogin}, {db}) {
+  fakeUserAuth: async (parent, {githubLogin}, {db}) => {
 
     let user = await db.collection("users").findOne({githubLogin});
 
