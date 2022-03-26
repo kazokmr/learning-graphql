@@ -5,6 +5,7 @@ import {AuthorizedUser} from "./AuthorizedUser"
 import {Users} from "./Users";
 import {Photos} from "./Photos";
 import {PostPhoto} from "./PostPhoto";
+import "./App.css";
 
 export const ROOT_QUERY = gql`
     query allUsers {
