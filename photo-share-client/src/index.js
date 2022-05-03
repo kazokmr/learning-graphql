@@ -1,5 +1,4 @@
 import React from "react";
-import {render} from "react-dom";
 import {App} from "./App";
 import "./index.css";
 import {
@@ -13,6 +12,7 @@ import {WebSocketLink} from "@apollo/client/link/ws";
 import {getMainDefinition} from "@apollo/client/utilities";
 import {LocalStorageWrapper, persistCache} from "apollo3-cache-persist";
 import {createUploadLink} from "apollo-upload-client/public/index";
+import {createRoot} from "react-dom/client";
 
 const httpLink = new createUploadLink({uri: 'http://localhost:4000/graphql'});
 
@@ -64,9 +64,11 @@ const client = new ApolloClient({
   cache: cache,
 });
 
-render(
+const container = document.getElementById("root")
+const root = createRoot(container);
+
+root.render(
   <ApolloProvider client={client}>
     <App/>
-  </ApolloProvider>,
-  document.getElementById('root')
+  </ApolloProvider>
 );
