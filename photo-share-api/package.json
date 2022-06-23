@@ -24,7 +24,7 @@
     "graphql-upload": "^15.0.1",
     "graphql-validation-complexity": "^0.4.2",
     "mongodb": "^4.5.0",
-    "node-fetch": "^3.2.4",
+    "node-fetch": "^3.2.5",
     "nodemon": "^2.0.16",
     "subscriptions-transport-ws": "^0.11.0"
   }
