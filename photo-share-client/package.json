@@ -6,7 +6,7 @@
     "@apollo/client": "^3.6.8",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
-    "@testing-library/user-event": "^14.2.5",
+    "@testing-library/user-event": "^14.2.6",
     "apollo-upload-client": "^17.0.0",
     "apollo3-cache-persist": "^0.14.1",
     "graphql": "^16.4.0",
