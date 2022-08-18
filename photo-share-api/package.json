@@ -23,7 +23,7 @@
     "graphql-subscriptions": "^2.0.0",
     "graphql-upload": "^16.0.0",
     "graphql-validation-complexity": "^0.4.2",
-    "mongodb": "^4.8.0",
+    "mongodb": "^4.8.1",
     "node-fetch": "^3.2.10",
     "nodemon": "^2.0.19",
     "subscriptions-transport-ws": "^0.11.0"
