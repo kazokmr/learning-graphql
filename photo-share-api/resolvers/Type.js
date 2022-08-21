@@ -1,6 +1,6 @@
 import {GraphQLScalarType} from "graphql";
-import {GraphQLUpload} from "graphql-upload";
 import {ObjectId} from "mongodb";
+import GraphQLUpload from "graphql-upload/GraphQLUpload.mjs";
 
 const Type = {
 

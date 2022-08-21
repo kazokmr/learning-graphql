@@ -15,7 +15,7 @@ import {
 } from "apollo-server-core";
 import path from "path";
 import dotenv from "dotenv";
-import {graphqlUploadExpress} from "graphql-upload/public/index.js";
+import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
 
 dotenv.config();
 const typeDefs = readFileSync(`./typeDefs.graphql`, `UTF-8`);
