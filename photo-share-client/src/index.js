@@ -11,7 +11,7 @@ import {
 import {WebSocketLink} from "@apollo/client/link/ws";
 import {getMainDefinition} from "@apollo/client/utilities";
 import {LocalStorageWrapper, persistCache} from "apollo3-cache-persist";
-import {createUploadLink} from "apollo-upload-client/public/index";
+import {createUploadLink} from "apollo-upload-client";
 import {createRoot} from "react-dom/client";
 
 const httpLink = new createUploadLink({uri: 'http://localhost:4000/graphql'});

@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@graphql-tools/schema": "^9.0.2",
+    "@graphql-tools/schema": "^9.0.3",
     "apollo-server-core": "^3.10.2",
     "apollo-server-express": "^3.10.2",
     "dotenv": "^16.0.2",
@@ -21,9 +21,9 @@
     "graphql-depth-limit": "^1.1.0",
     "graphql-playground-middleware-express": "^1.7.23",
     "graphql-subscriptions": "^2.0.0",
-    "graphql-upload": "^16.0.1",
+    "graphql-upload": "^16.0.2",
     "graphql-validation-complexity": "^0.4.2",
-    "mongodb": "^4.9.0",
+    "mongodb": "^4.9.1",
     "node-fetch": "^3.2.10",
     "nodemon": "^2.0.19",
     "subscriptions-transport-ws": "^0.11.0"
