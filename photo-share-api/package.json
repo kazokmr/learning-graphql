@@ -11,6 +11,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": "18"
+  },
+  "packageManager": "npm@9.4.2",
   "dependencies": {
     "@graphql-tools/schema": "^9.0.13",
     "apollo-server-core": "^3.11.1",

@@ -11,6 +11,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": "18"
+  },
+  "packageManager": "npm@9.4.2",
   "dependencies": {
     "apollo-server": "^3.11.1",
     "casual": "^1.6.2",
