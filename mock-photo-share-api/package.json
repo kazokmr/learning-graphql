@@ -14,13 +14,13 @@
   "engines": {
     "node": "18"
   },
-  "packageManager": "npm@9.4.2",
+  "packageManager": "npm@9.5.1",
   "dependencies": {
     "apollo-server": "^3.11.1",
     "casual": "^1.6.2",
     "graphql": "^16.6.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.20"
   }
 }
